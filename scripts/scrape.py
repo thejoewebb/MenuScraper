@@ -1,8 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import os
-import time
-import random
+import os, time, random
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
