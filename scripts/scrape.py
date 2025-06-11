@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+import time
+import random
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0"
@@ -35,14 +37,21 @@ def process_html(path, output_dir="data/images"):
         for i, link in enumerate(links):
             href = link.get("href")
             try:
+                #Skip empty or malformed hrefs
+                if not href or not href.startswith("http"):
+                    continue
                 # Download the image
                 img_data = requests.get(href, headers=HEADERS).content
                 file_name = f"menu_{i:03}.jpg"
-                #file_path = os.path.join(output_dir, file_name)
-                print(file_name, href)
-                #with open(file_path, "wb") as f:
-                    #f.write(img_data)
-                #print(f"Saved: {file_name}")
+                file_path = os.path.join(output_dir, file_name)
+                with open(file_path, "wb") as f:
+                    f.write(img_data)
+                print(f"Saved: {file_name}")
+
+                # Add a random delay between 1.5 to 4.5 seconds
+                delay = random.uniform(1.5, 4.5)
+                time.sleep(delay)
+
             except Exception as e:
                 print(f"Failed to download {href}: {e}")
     else:
@@ -51,7 +60,7 @@ def process_html(path, output_dir="data/images"):
 # Example restaurant (pick one manually from Tabelog to start)
 if __name__ == "__main__":
     print("start")
-    test_url = "https://tabelog.com/tokyo/A1307/A130701/13275212/"
+    test_url = "https://tabelog.com/tokyo/A1307/A130701/13275212/dtlmenu/photo/"
     #scrape_tabelog_menu(test_url)
     process_html("data/raw_html/test_page.html")
     print("stop")
